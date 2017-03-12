@@ -1,5 +1,0 @@
-// Microsoft Visual C++ generated Help ID include file.
-// Used by WT500Demo.rc
-//
-#define HIDC_EDIT_IP                    0x808204b1    // IDD_COMM_DIALOG [âpåÍ (ïƒçë)]
-#define HIDC_SERIALNO                   0x8082043a    // IDD_COMM_DIALOG [âpåÍ (ïƒçë)]
