@@ -8,7 +8,6 @@ QWT500::QWT500(QWidget *parent) : QWidget(parent), m_layout (NULL)
     this->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
     this->setContentsMargins(0,0,0,0);
     this->setLayout(m_layout);
-    this->show();
 
    UpdateRate.append("100ms");
    UpdateRate.append("200ms");
@@ -23,68 +22,53 @@ QWT500::QWT500(QWidget *parent) : QWidget(parent), m_layout (NULL)
    connect(m_timer, SIGNAL(timeout()), this, SLOT(m_timeout()));
 
    L1Data = new mDataHandler (this);
-   L1Data->addNoErr("U1","Vrms");
-   L1Data->addNoErr("I1","Irms");
-   L1Data->addNoErr("P1","W");
-   L1Data->addNoErr("Q1","VAR");
-   L1Data->addNoErr("S1","VA");
-   L1Data->addNoErr("λ1","");
-   L1Data->addNoErr("EP1","kWh");
-   L1Data->addNoErr("EQ1","kWh");
-   L1Data->addNoErr("M1","€");
+   L2Data = new mDataHandler (this);
+   L3Data = new mDataHandler (this);
+   LTData = new mDataHandler (this);
+
+   //m_layout->addWidget(LTData);
+
+   addItem("URMS",       L1Data, 1, "U1","Vrms");
+   addItem("IRMS",         L1Data, 1, "I1","Arms");
+   addItem("P",               L1Data, 1, "P1","W");
+   addItem("Q",              L1Data, 1, "Q1","VAR");
+   addItem("S",               L1Data, 1, "S1","VA");
+   addItem("LAMBDA"   ,L1Data, 1, "L1","");
+   addItem("WHP",        L1Data, 1, "EP1","kWh");
+   addItem("WQ",          L1Data, 1, "EQ1","kWh");
    m_layout->addWidget(L1Data);
 
-   L2Data = new mDataHandler (NULL);
-   L2Data->addNoErr("U2","Vrms");
-   L2Data->addNoErr("I2","Irms");
-   L2Data->addNoErr("P2","W");
-   L2Data->addNoErr("2","VAR");
-   L2Data->addNoErr("S2","VA");
-   L2Data->addNoErr("λ2","");
-   L2Data->addNoErr("EP2","kWh");
-   L2Data->addNoErr("EQ2","kWh");
-   L2Data->addNoErr("M2","€");
+   addItem("URMS",       L1Data, 2, "U2","Vrms");
+   addItem("IRMS",         L1Data, 2, "I2","Arms");
+   addItem("P",               L1Data, 2, "P2","W");
+   addItem("Q",              L1Data, 2, "Q2","VAR");
+   addItem("S",               L1Data, 2, "S2","VA");
+   addItem("LAMBDA"   ,L1Data, 2, "L2","");
+   addItem("WHP",        L1Data, 2, "EP2","kWh");
+   addItem("WQ",          L1Data, 2, "EQ2","kWh");
    m_layout->addWidget(L2Data);
 
-   L3Data = new mDataHandler (NULL);
-   L3Data->addNoErr("U3","Vrms");
-   L3Data->addNoErr("I3","Irms");
-   L3Data->addNoErr("P3","W");
-   L3Data->addNoErr("Q3","VAR");
-   L3Data->addNoErr("S3","VA");
-   L3Data->addNoErr("λ3","");
-   L3Data->addNoErr("EP3","kWh");
-   L3Data->addNoErr("EQ3","kWh");
-   L3Data->addNoErr("M3","€");
+
+   addItem("URMS",       L1Data, 3, "U3","Vrms");
+   addItem("IRMS",         L1Data, 3, "I3","Arms");
+   addItem("P",               L1Data, 3, "P3","W");
+   addItem("Q",              L1Data, 3, "Q3","VAR");
+   addItem("S",               L1Data, 3, "S3","VA");
+   addItem("LAMBDA"   ,L1Data, 3, "L3","");
+   addItem("WHP",        L1Data, 3, "EP3","kWh");
+   addItem("WQ",          L1Data, 3, "EQ3","kWh");
    m_layout->addWidget(L3Data);
 
-   LTData = new mDataHandler (NULL);
-   LTData->addNoErr("UT","Vrms");
-   LTData->addNoErr("IT","Irms");
-   LTData->addNoErr("PT","W");
-   LTData->addNoErr("QT","VAR");
-   LTData->addNoErr("ST","VA");
-   LTData->addNoErr("λT","");
-   LTData->addNoErr("EPT","kWh");
-   LTData->addNoErr("EQT","kWh");
-   LTData->addNoErr("MT","€");
-   m_layout->addWidget(LTData);
+   this->show();
 
-    /*
-   Common = new mDataHandler (this);
-   Common->addNoErr("F", "Hz");
-   Common->addNoErr("Temp", "°C");
-   Common->addNoErr("Circ T", "ms");
-   Common->addNoErr("Circ F", "°Hz");
-   ui->layoutCommonPanelData->addWidget(Common);
-   */
 }
 int QWT500::send(QString msg)
 {
     QByteArray ba = msg.toLatin1();
+    //qDebug() << "send : " << msg;
     return TmcSend( m_iID,(LPSTR)(LPCTSTR) ba.data( ) );
 }
-float QWT500::receive( int blen, int* rlen)
+QList<float> QWT500::receive( int blen, int* rlen)
 {
     char rec[1000] = {0};
 
@@ -101,13 +85,10 @@ float QWT500::receive( int blen, int* rlen)
             data.append ( listString.toFloat() );
     }
 
-    foreach(float listData, data)
-    {
-         qDebug() << listData;
-    }
 
 
-    return 5.0;
+
+    return data;
 }
 void QWT500::disconnect()
 {
@@ -178,24 +159,50 @@ int   QWT500::Check_WTSeries(int wire,char* addr, bool stayConnected) {
 
     return ret;
 }
-
-void QWT500::m_timeout()
+void QWT500::resolveReceivedData()
 {
-    qDebug() << "... timeout";
-    // check if connected
+    // put in reception mode
+    int rl = 0;
+    QList <float> data = receive(1000,&rl);
 
-    this->send(":NUMERIC:FORMAT ASCII");
-    this->send(":NUMERIC:NORMAL:NUMBER 4");
-    this->send(":NUMERIC:NORMAL:ITEM1 URMS,1;ITEM2 URMS,2;ITEM3 IRMS,1;ITEM4 URMS,SIGMA");
+    if (data.size() != m_itemList.size()) return ;
+
+    int counter = 0;
+    foreach (qwt500Item * item, m_itemList) {
+        item->getHandle()->setData(item->getDataName(),data.at(counter++)); // set data of mData element
+
+    }
+}
+
+void QWT500::updateData()
+{
+    this->send(":NUMERIC:FORMAT ASCII");            // send format
+    this->send(":NUMERIC:NORMAL:NUMBER " + QString::number(m_itemList.size())); // send data
+    QString msgToSend = "";
+    int counter = 1;
+    foreach (qwt500Item * item, m_itemList) {
+        msgToSend.append("ITEM" + QString::number(counter++));
+        msgToSend.append(" " + item->getFunctionName());
+        msgToSend.append("," + QString::number(item->getElement()));
+
+        if (counter <= m_itemList.size()) {
+            msgToSend.append(";");
+        }
+    }
+
+    this->send(":NUMERIC:NORMAL:" + msgToSend);
     this->send(":NUMERIC:NORMAL:VALUE?");
 
-    int rl = 0;
-    this->receive(100,&rl);
 
-    qDebug() << "Real length = " << rl;
+}
+void QWT500::m_timeout()
+{
+    updateData ();
+    resolveReceivedData ();
 
     emit newDataAvailable();
 }
+
 bool  QWT500::search( void ) {
     DEVICELIST	listbuff[127] ;
 
@@ -214,7 +221,6 @@ bool  QWT500::search( void ) {
 
     return false;
 }
-
 void QWT500::start (int time)
 {
     m_isRunning = true;
@@ -225,3 +231,11 @@ void QWT500::stop()
     m_isRunning = false;
     m_timer->stop();
 }
+
+void QWT500::addItem(QString functionName, mDataHandler *phase, int element, QString mDataName, QString mDataUnit)
+{
+    phase->addNoErr(mDataName, mDataUnit);
+    qwt500Item * item = new qwt500Item (NULL, functionName, mDataName, element, phase);
+    m_itemList.append(item);
+}
+

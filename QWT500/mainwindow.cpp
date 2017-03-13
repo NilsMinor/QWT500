@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->horizontalLayout->addWidget(&wt500);
-
+    wt500.show();
 }
 
 MainWindow::~MainWindow()

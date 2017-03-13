@@ -9,6 +9,7 @@
 #include "mData/mdatahandler.h"
 #include "QTimer"
 #include "mData/mdatahandler.h"
+#include "yokogawa/qwt500item.h"
 
 class QWT500 : public QWidget
 {
@@ -18,22 +19,27 @@ public:
     QStringList getDeviceInfo (void) { return deviceInfo; }
 
     int send(QString msg);
-    float receive( int blen, int* rlen);
+    QList <float> receive( int blen, int* rlen);
     void disconnect (void);
     bool search(void);
     void start (int time);
     void stop (void);
     QStringList getUpdateRateHandle (void) { return UpdateRate; }
     bool isRunning (void) { return m_isRunning; }
+    void addItem (QString functionName, mDataHandler * phase, int element, QString mDataName, QString mDataUnit);
 
 private:
     int Check_WTSeries(int wire, char* addr, bool stayConnected);
+    void updateData (void);
+    void resolveReceivedData (void);
     QStringList deviceInfo;
     int m_iID;
     QStringList UpdateRate;
     bool m_isRunning;
     QTimer *m_timer;
     QHBoxLayout *m_layout;
+    QList <qwt500Item*> m_itemList;
+
 
     mDataHandler * L1Data;
     mDataHandler * L2Data;
