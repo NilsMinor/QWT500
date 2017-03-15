@@ -1,10 +1,10 @@
-#include "mainwindow.h"
+#include "qwt500widget.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    QWT500Widget w;
     w.show();
 
     return a.exec();

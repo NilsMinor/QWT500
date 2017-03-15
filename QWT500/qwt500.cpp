@@ -2,7 +2,8 @@
 
 QWT500::QWT500(QWidget *parent) : QWidget(parent), m_layout (NULL)
 {
-    m_layout = new QHBoxLayout(this);
+    connected = false;
+    m_layout = new QHBoxLayout(NULL);
     m_layout->setContentsMargins(0,0,0,0);
     m_layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     this->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
@@ -36,27 +37,27 @@ QWT500::QWT500(QWidget *parent) : QWidget(parent), m_layout (NULL)
    addItem("LAMBDA"   ,L1Data, 1, "L1","");
    addItem("WHP",        L1Data, 1, "EP1","kWh");
    addItem("WQ",          L1Data, 1, "EQ1","kWh");
+
+   addItem("URMS",       L2Data, 2, "U2","Vrms");
+   addItem("IRMS",         L2Data, 2, "I2","Arms");
+   addItem("P",               L2Data, 2, "P2","W");
+   addItem("Q",              L2Data, 2, "Q2","VAR");
+   addItem("S",               L2Data, 2, "S2","VA");
+   addItem("LAMBDA"   ,L2Data, 2, "L2","");
+   addItem("WHP",        L2Data, 2, "EP2","kWh");
+   addItem("WQ",          L2Data, 2, "EQ2","kWh");
+
+   addItem("URMS",       L3Data, 3, "U3","Vrms");
+   addItem("IRMS",         L3Data, 3, "I3","Arms");
+   addItem("P",               L3Data, 3, "P3","W");
+   addItem("Q",              L3Data, 3, "Q3","VAR");
+   addItem("S",               L3Data, 3, "S3","VA");
+   addItem("LAMBDA"   ,L3Data, 3, "L3","");
+   addItem("WHP",        L3Data, 3, "EP3","kWh");
+   addItem("WQ",          L3Data, 3, "EQ3","kWh");
+
    m_layout->addWidget(L1Data);
-
-   addItem("URMS",       L1Data, 2, "U2","Vrms");
-   addItem("IRMS",         L1Data, 2, "I2","Arms");
-   addItem("P",               L1Data, 2, "P2","W");
-   addItem("Q",              L1Data, 2, "Q2","VAR");
-   addItem("S",               L1Data, 2, "S2","VA");
-   addItem("LAMBDA"   ,L1Data, 2, "L2","");
-   addItem("WHP",        L1Data, 2, "EP2","kWh");
-   addItem("WQ",          L1Data, 2, "EQ2","kWh");
    m_layout->addWidget(L2Data);
-
-
-   addItem("URMS",       L1Data, 3, "U3","Vrms");
-   addItem("IRMS",         L1Data, 3, "I3","Arms");
-   addItem("P",               L1Data, 3, "P3","W");
-   addItem("Q",              L1Data, 3, "Q3","VAR");
-   addItem("S",               L1Data, 3, "S3","VA");
-   addItem("LAMBDA"   ,L1Data, 3, "L3","");
-   addItem("WHP",        L1Data, 3, "EP3","kWh");
-   addItem("WQ",          L1Data, 3, "EQ3","kWh");
    m_layout->addWidget(L3Data);
 
    this->show();
@@ -84,9 +85,6 @@ QList<float> QWT500::receive( int blen, int* rlen)
         else
             data.append ( listString.toFloat() );
     }
-
-
-
 
     return data;
 }
@@ -216,6 +214,7 @@ bool  QWT500::search( void ) {
     qDebug () << m_iID;
     if (chk_wt == 0)
     {
+        connected = true;
         return true;   // info in deviceInfo
     }
 
@@ -223,8 +222,14 @@ bool  QWT500::search( void ) {
 }
 void QWT500::start (int time)
 {
-    m_isRunning = true;
-    m_timer->start(time);
+    if (connected) {
+        m_isRunning = true;
+        m_timer->start(time);
+    }
+    else
+    {
+        // error message
+    }
 }
 void QWT500::stop()
 {

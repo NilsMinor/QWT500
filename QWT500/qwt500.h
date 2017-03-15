@@ -5,11 +5,11 @@
 #include <QDebug>
 #include <cstring>
 #include <atlstr.h>
+#include <QTimer>
+#include "mData/mdatahandler.h"
+#include "qwt500item.h"
 #include "yokogawa/tmctl.h"
 #include "mData/mdatahandler.h"
-#include "QTimer"
-#include "mData/mdatahandler.h"
-#include "yokogawa/qwt500item.h"
 
 class QWT500 : public QWidget
 {
@@ -29,6 +29,7 @@ public:
     void addItem (QString functionName, mDataHandler * phase, int element, QString mDataName, QString mDataUnit);
 
 private:
+    bool connected;
     int Check_WTSeries(int wire, char* addr, bool stayConnected);
     void updateData (void);
     void resolveReceivedData (void);

@@ -7,7 +7,6 @@
 #include <QDateTime>
 #include "mData/mdata.h"
 #include "mData/mdatahandler.h"
-
 class mDataLogger : public QObject
 {
     Q_OBJECT

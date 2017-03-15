@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-02-09T23:24:56
+# Project created by QtCreator 2017-03-15T23:30:11
 #
 #-------------------------------------------------
 
@@ -10,6 +10,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = QWT500
 TEMPLATE = app
+
+#TEMPLATE = lib
+#DEFINES += BUILD_DLL
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -25,21 +28,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 LIBS += -L"$$_PRO_FILE_PWD_/yokogawa" -ltmctl64
 
-
 SOURCES += main.cpp\
-        mainwindow.cpp \
+        qwt500widget.cpp \
     qwt500.cpp \
+    qwt500item.cpp \
     mData/mdata.cpp \
     mData/mdatahandler.cpp \
-    yokogawa/qwt500item.cpp
+    mData/mdatalogger.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += qwt500widget.h \
     qwt500.h \
+    qwt500item.h \
     yokogawa/tmctl.h \
     mData/mdata.h \
     mData/mdatahandler.h \
-    yokogawa/qwt500item.h
+    mData/mdatalogger.h
 
-
-FORMS    += mainwindow.ui
-
+FORMS    += qwt500widget.ui
