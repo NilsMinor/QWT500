@@ -25,10 +25,10 @@ public:
     ~QWT500Widget();
 
 private slots:
-    void on_pushButtonSearch_released();
-    void on_pushButtonStart_released();
-    void on_comboBoxPeriod_currentIndexChanged(const QString &arg1);
-    void on_pushButtonReset_released();
+    void on_pushButtonQWT500Search_released();
+    void on_pushButtonQWT500Start_released();
+    void on_comboBoxQWT500Period_currentIndexChanged(const QString &arg1);
+    void on_pushButtonQWT500Reset_released();
 
 private:
     Ui::QWT500Widget *ui;
