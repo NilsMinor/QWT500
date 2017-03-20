@@ -24,23 +24,29 @@ public:
     bool search(void);
     void start (int time);
     void stop (void);
+    void reset (void);
+    void setUpdateRate (QString rate);
+    void setVoltageRange (QString range);
+    void setCurrentRange (QString range);
     QStringList getUpdateRateHandle (void) { return UpdateRate; }
     bool isRunning (void) { return m_isRunning; }
     void addItem (QString functionName, mDataHandler * phase, int element, QString mDataName, QString mDataUnit);
+    mDataHandler* getPhaseInformation(int phase);
 
 private:
     bool connected;
     int Check_WTSeries(int wire, char* addr, bool stayConnected);
     void updateData (void);
+    void triggerDataRead (void);
     void resolveReceivedData (void);
     QStringList deviceInfo;
-    int m_iID;
     QStringList UpdateRate;
+    int m_iID;
     bool m_isRunning;
     QTimer *m_timer;
     QHBoxLayout *m_layout;
     QList <qwt500Item*> m_itemList;
-
+    bool deviceReady;
 
     mDataHandler * L1Data;
     mDataHandler * L2Data;

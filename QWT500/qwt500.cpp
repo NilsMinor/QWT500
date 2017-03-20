@@ -88,11 +88,11 @@ QList<float> QWT500::receive( int blen, int* rlen)
 
     return data;
 }
+
 void QWT500::disconnect()
 {
     TmcFinish(m_iID);
 }
-
 int   QWT500::Check_WTSeries(int wire,char* addr, bool stayConnected) {
 
     int ret;
@@ -157,22 +157,43 @@ int   QWT500::Check_WTSeries(int wire,char* addr, bool stayConnected) {
 
     return ret;
 }
-void QWT500::resolveReceivedData()
+void QWT500::resolveReceivedData(void)
 {
     // put in reception mode
     int rl = 0;
     QList <float> data = receive(1000,&rl);
 
-    if (data.size() != m_itemList.size()) return ;
+    if (data.size() != m_itemList.size()) {
+        int error = data.first();
 
+        switch (error) {
+            case 0: deviceReady = false;
+                break;
+            case 1: deviceReady = true;
+                break;
+        default:
+
+            break;
+        }
+        return ;
+    }
     int counter = 0;
     foreach (qwt500Item * item, m_itemList) {
         item->getHandle()->setData(item->getDataName(),data.at(counter++)); // set data of mData element
-
     }
 }
 
 void QWT500::updateData()
+{
+        if (deviceReady) {
+            this->send(":NUMERIC:NORMAL:VALUE?");
+            deviceReady = false;
+        }
+        else {
+            this->send(":STATUS:EESR?");
+        }
+}
+void QWT500::triggerDataRead()
 {
     this->send(":NUMERIC:FORMAT ASCII");            // send format
     this->send(":NUMERIC:NORMAL:NUMBER " + QString::number(m_itemList.size())); // send data
@@ -189,19 +210,43 @@ void QWT500::updateData()
     }
 
     this->send(":NUMERIC:NORMAL:" + msgToSend);
-    this->send(":NUMERIC:NORMAL:VALUE?");
 
-
+    this->send(":STATUS:FILTER1 FALL");
 }
 void QWT500::m_timeout()
 {
+    /* send get update
+        :NUMERIC:FORMAT ASCII
+        :NUMERIC:NORMAL:NUMBER 10
+        :NUMERIC:NORMAL:ITEM1 URMS,1;ITEM2 IRMS,1;ITEM3 P,1;ITEM4 Q,1;ITEM5 S,1;ITEM6 LAMBDA,1;ITEM7 WHP,1;ITEM8 WQ,1;ITEM9 URMS,2;ITEM10 IRMS,2
+        :STATUS:FILTER1 FALL
+        :STATUS:EESR?
+        :STATUS:EESR?
+        :NUMERIC:NORMAL:VALUE?
+        :STATUS:EESR?
+        :STATUS:EESR?
+        :STATUS:EESR?
+        :STATUS:EESR?
+        :NUMERIC:NORMAL:VALUE?
+
+        receive
+
+        1
+        1
+        198.36E+00,409.00E-03,81.13E+00,-0.61E+00,81.13E+00,1.0000E+00,NAN,NAN,0.00E+00,0.0000E+00
+        0
+        0
+        0
+        1
+        198.33E+00,408.96E-03,81.11E+00,-0.60E+00,81.11E+00,1.0000E+00,NAN,NAN,0.00E+00,0.0000E+00
+    */
+
     updateData ();
     resolveReceivedData ();
 
     emit newDataAvailable();
 }
-
-bool  QWT500::search( void ) {
+bool QWT500::search( void ) {
     DEVICELIST	listbuff[127] ;
 
     int		num ;
@@ -225,6 +270,7 @@ void QWT500::start (int time)
     if (connected) {
         m_isRunning = true;
         m_timer->start(time);
+        triggerDataRead();
     }
     else
     {
@@ -237,10 +283,42 @@ void QWT500::stop()
     m_timer->stop();
 }
 
+void QWT500::reset()
+{
+     this->send("*RST");
+}
+void QWT500::setUpdateRate(QString rate)
+{
+    this->send(":RATE " + rate);
+}
+void QWT500::setVoltageRange(QString range)
+{
+    this->send(":INPUT:VOLTAGE:RANGE:ELEMENT1 " + range);
+    this->send(":INPUT:VOLTAGE:RANGE:ELEMENT2 " + range);
+    this->send(":INPUT:VOLTAGE:RANGE:ELEMENT3 " + range);
+}
+
+void QWT500::setCurrentRange(QString range)
+{
+    this->send(":INPUT:CURRENT:RANGE:ELEMENT1 " + range);
+    this->send(":INPUT:CURRENT:RANGE:ELEMENT2 " + range);
+    this->send(":INPUT:CURRENT:RANGE:ELEMENT3 " + range);
+}
 void QWT500::addItem(QString functionName, mDataHandler *phase, int element, QString mDataName, QString mDataUnit)
 {
     phase->addNoErr(mDataName, mDataUnit);
     qwt500Item * item = new qwt500Item (NULL, functionName, mDataName, element, phase);
     m_itemList.append(item);
+}
+
+mDataHandler *QWT500::getPhaseInformation(int phase)
+{
+    switch (phase) {
+        case 1: return L1Data;  break;
+        case 2: return L2Data;  break;
+        case 3: return L3Data;  break;
+        case 4: return LTData;  break;
+        default: qDebug() << "getPhaseInformation error for value: " << phase ;
+    }
 }
 

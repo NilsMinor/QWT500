@@ -17,6 +17,9 @@
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <layout class="QGridLayout" name="qwt500GridLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinimumSize</enum>
+      </property>
       <item row="0" column="2">
        <widget class="QComboBox" name="comboBoxQWT500Style">
         <property name="enabled">
@@ -34,55 +37,7 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QComboBox" name="comboBoxQWT500Period">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>100</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>500</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>1000</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>2500</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>5000</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="1" column="5">
-       <widget class="QLineEdit" name="lineEditQWT500DeviceInfo"/>
-      </item>
-      <item row="1" column="6">
-       <widget class="QPushButton" name="pushButtonQWT500Search">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Search &amp; Connect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4" rowspan="2" colspan="2">
+      <item row="0" column="4" rowspan="5" colspan="2">
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -99,10 +54,210 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="6">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Current Range</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QComboBox" name="comboBoxQWT500VoltageRange">
+        <item>
+         <property name="text">
+          <string>AUTO</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>15V</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>30V</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>60V</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>100V</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>150V</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>300V</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>600V</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>1000V</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="7">
+       <widget class="QComboBox" name="comboBoxQWT500Period">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>100ms</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>200ms</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>500ms</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>1000ms</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2000ms</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>5000ms</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Voltage Range</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <widget class="QPushButton" name="pushButtonQWT500Reset">
         <property name="text">
          <string>Reset</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="lineEditQWT500DeviceInfo">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QComboBox" name="comboBoxQWT500CurrentRange">
+        <item>
+         <property name="text">
+          <string>AUTO</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>500mA</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>1A</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2A</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>5A</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>10A</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>20A</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>40A</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="pushButtonQWT500Search">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Search &amp; Connect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="6">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Update Rate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QPushButton" name="pushButtonInfo">
+        <property name="text">
+         <string>Info</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Nils Minor, 20.03.2017, QWT500 </string>
         </property>
        </widget>
       </item>

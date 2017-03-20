@@ -27,12 +27,21 @@ public:
 private slots:
     void on_pushButtonQWT500Search_released();
     void on_pushButtonQWT500Start_released();
-    void on_comboBoxQWT500Period_currentIndexChanged(const QString &arg1);
     void on_pushButtonQWT500Reset_released();
+    void on_comboBoxQWT500CurrentRange_currentIndexChanged(const QString &arg1);
+    void on_comboBoxQWT500VoltageRange_currentIndexChanged(const QString &arg1);
+    void on_comboBoxQWT500Period_currentIndexChanged(const QString &arg1);
+    void on_pushButtonInfo_released();
 
 private:
     Ui::QWT500Widget *ui;
     QWT500 wt500;
+
+private slots:
+    void newDataAvailable (void);
+
+signals:
+    void newDataMeasured (mDataHandler * L1,mDataHandler * L2, mDataHandler * L3, mDataHandler * LT);
 };
 
 #endif // QWT500Widget_H
