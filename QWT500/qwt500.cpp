@@ -26,8 +26,7 @@ QWT500::QWT500(QWidget *parent) : QWidget(parent), m_layout (NULL)
    L2Data = new mDataHandler (this);
    L3Data = new mDataHandler (this);
    LTData = new mDataHandler (this);
-
-   //m_layout->addWidget(LTData);
+   Harmonics = new mDataHandler (this);
 
    addItem("URMS",       L1Data, 1, "U1","Vrms");
    addItem("IRMS",         L1Data, 1, "I1","Arms");
@@ -56,9 +55,14 @@ QWT500::QWT500(QWidget *parent) : QWidget(parent), m_layout (NULL)
    addItem("WHP",        L3Data, 3, "EP3","kWh");
    addItem("WQ",          L3Data, 3, "EQ3","kWh");
 
+   for (int i=0; i!=10; i++) {
+        addItem("URMS",       Harmonics, 3,"H" +  QString::number(i),"X");
+    }
+
    m_layout->addWidget(L1Data);
    m_layout->addWidget(L2Data);
    m_layout->addWidget(L3Data);
+   //m_layout->addWidget(LTData);
 
    this->show();
 
@@ -181,6 +185,7 @@ void QWT500::resolveReceivedData(void)
     foreach (qwt500Item * item, m_itemList) {
         item->getHandle()->setData(item->getDataName(),data.at(counter++)); // set data of mData element
     }
+     emit newDataAvailable();
 }
 
 void QWT500::updateData()
@@ -210,7 +215,6 @@ void QWT500::triggerDataRead()
     }
 
     this->send(":NUMERIC:NORMAL:" + msgToSend);
-
     this->send(":STATUS:FILTER1 FALL");
 }
 void QWT500::m_timeout()
@@ -243,8 +247,6 @@ void QWT500::m_timeout()
 
     updateData ();
     resolveReceivedData ();
-
-    emit newDataAvailable();
 }
 bool QWT500::search( void ) {
     DEVICELIST	listbuff[127] ;
@@ -282,11 +284,11 @@ void QWT500::stop()
     m_isRunning = false;
     m_timer->stop();
 }
-
 void QWT500::reset()
 {
      this->send("*RST");
 }
+
 void QWT500::setUpdateRate(QString rate)
 {
     this->send(":RATE " + rate);
@@ -297,7 +299,6 @@ void QWT500::setVoltageRange(QString range)
     this->send(":INPUT:VOLTAGE:RANGE:ELEMENT2 " + range);
     this->send(":INPUT:VOLTAGE:RANGE:ELEMENT3 " + range);
 }
-
 void QWT500::setCurrentRange(QString range)
 {
     this->send(":INPUT:CURRENT:RANGE:ELEMENT1 " + range);

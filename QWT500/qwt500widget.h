@@ -1,22 +1,27 @@
 #ifndef QWT500Widget_H
 #define QWT500Widget_H
 
+/**
+ * @file        qwt500widget.h
+ * @author  Nils Minor (www.nilsminor.de)
+ * @date     29.03.2017
+ * @brief     Builds a widget to reuse or display it on a gui
+ *
+ * This class includes the qwt500 driver class. It also controls (not handles) the communication between
+ * The computer and the WT500 and emits a signal with new data everytime it is available.
+ */
+
 #include <qwt500widget.h>
 #include <QMainWindow>
 #include "qwt500.h"
+#include <QMessageBox>
 
 namespace Ui {
 class QWT500Widget;
 }
 
 
-#if defined BUILD_DLL
-#define TEST_COMMON_DLLSPEC Q_DECL_EXPORT
-#else
-#define TEST_COMMON_DLLSPEC
-#endif
-
-class  TEST_COMMON_DLLSPEC QWT500Widget : public QMainWindow
+class  QWT500Widget : public QMainWindow
 {
     Q_OBJECT
 
@@ -40,8 +45,14 @@ private:
 private slots:
     void newDataAvailable (void);
 
+    void on_comboBoxQWT500Style_currentIndexChanged(int index);
+
 signals:
     void newDataMeasured (mDataHandler * L1,mDataHandler * L2, mDataHandler * L3, mDataHandler * LT);
 };
 
 #endif // QWT500Widget_H
+
+
+
+

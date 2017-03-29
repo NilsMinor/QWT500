@@ -1,7 +1,6 @@
 #include "qwt500widget.h"
 #include "ui_qwt500widget.h"
 
-
 QWT500Widget::QWT500Widget(QWidget *parent) : QMainWindow(parent),  ui(new Ui::QWT500Widget)
 {
     ui->setupUi(this);
@@ -24,6 +23,9 @@ void QWT500Widget::on_pushButtonQWT500Search_released()
          ui->pushButtonQWT500Reset->setEnabled(true);
          ui->pushButtonQWT500Start->setEnabled(true);
          ui->comboBoxQWT500Period->setEnabled(true);
+         ui->comboBoxQWT500Style->setEnabled(true);
+         ui->comboBoxQWT500CurrentRange->setEnabled(true);
+         ui->comboBoxQWT500VoltageRange->setEnabled(true);
      }
      else
      {
@@ -62,12 +64,20 @@ void QWT500Widget::on_comboBoxQWT500Period_currentIndexChanged(const QString &ar
 {
     wt500.setUpdateRate(arg1);
 }
-
+void QWT500Widget::on_comboBoxQWT500Style_currentIndexChanged(int index)
+{
+    ui->stackedWidget->setCurrentIndex(index);  // change index of stacked widget
+}
 void QWT500Widget::on_pushButtonInfo_released()
 {
-
+    QMessageBox msgBox;
+    msgBox.setText("Qt application to access the WT500 data");
+    msgBox.setInformativeText("This application was developed by Nils Minor as part of the PSOM project. "
+                              "The Application supports to setup a WT500 as well as reading the measurement data out of Yokogawas WT500.");
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Save);
+    int ret = msgBox.exec();
 }
-
 void QWT500Widget::newDataAvailable()
 {
     emit newDataMeasured( wt500.getPhaseInformation(1),

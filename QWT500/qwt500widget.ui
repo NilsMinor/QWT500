@@ -63,6 +63,9 @@
       </item>
       <item row="0" column="7">
        <widget class="QComboBox" name="comboBoxQWT500VoltageRange">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <item>
          <property name="text">
           <string>AUTO</string>
@@ -168,6 +171,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QPushButton" name="pushButtonQWT500Reset">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Reset</string>
         </property>
@@ -185,6 +191,9 @@
       </item>
       <item row="1" column="7">
        <widget class="QComboBox" name="comboBoxQWT500CurrentRange">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <item>
          <property name="text">
           <string>AUTO</string>
@@ -264,7 +273,25 @@
      </layout>
     </item>
     <item row="1" column="0">
-     <layout class="QHBoxLayout" name="qwt500HorizontalLayout"/>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="page_5">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="qwt500HorizontalLayout"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_6">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="qwt500HarmonicsLayout"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
