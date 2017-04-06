@@ -55,17 +55,12 @@ QWT500::QWT500(QWidget *parent) : QWidget(parent), m_layout (NULL)
    addItem("WHP",        L3Data, 3, "EP3","kWh");
    addItem("WQ",          L3Data, 3, "EQ3","kWh");
 
-   for (int i=0; i!=10; i++) {
-        addItem("URMS",       Harmonics, 3,"H" +  QString::number(i),"X");
-    }
-
    m_layout->addWidget(L1Data);
    m_layout->addWidget(L2Data);
    m_layout->addWidget(L3Data);
    //m_layout->addWidget(LTData);
 
    this->show();
-
 }
 int QWT500::send(QString msg)
 {
